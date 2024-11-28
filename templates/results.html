@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+</head>
+<body>
+    <h1>Search Results</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Image Label</th>
+                <th>Similarity (%)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for label, similarity in results %}
+            <tr>
+                <td>{{ label }}</td>
+                <td>{{ similarity|round(2) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="/">Back to Home</a>
+</body>
+</html>
