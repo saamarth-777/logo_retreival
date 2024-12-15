@@ -6,7 +6,7 @@ from tensorflow.keras.applications import VGG19
 from tensorflow.keras.applications.vgg19 import preprocess_input
 from tensorflow.keras import Model
 import pickle
-from scipy.spatial.distance import euclidean
+from numpy.linalg import norm
 
 app = Flask(__name__)
 
@@ -46,12 +46,16 @@ def search():
     # Extract features of the input image
     input_feature = feature_extraction_model.predict(img_array).flatten()
 
-    # Compute similarity with stored features
+    # Compute similarity with stored features using cosine similarity
     similarities = {}
     for label, features in features_dict.items():
         for idx, stored_feature in enumerate(features):
-            dist = euclidean(input_feature, stored_feature)
-            similarity = 100 * (1 - (dist / max(dist, 1e-6)))  # Avoid divide-by-zero errors
+            # Calculate cosine similarity
+            dot_product = np.dot(input_feature, stored_feature)
+            norm_input = norm(input_feature)
+            norm_stored = norm(stored_feature)
+            cosine_similarity = dot_product / (norm_input * norm_stored + 1e-6)  # Add small value to prevent divide-by-zero
+            similarity = 100 * cosine_similarity  # Scale similarity to a percentage
             similarities[f"{label} (image {idx + 1})"] = similarity
 
     # Sort by highest similarity
